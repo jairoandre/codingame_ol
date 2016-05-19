@@ -32,13 +32,12 @@ function Board (board) {
 
 function height (line) {
   let height = 0;
-  return line.reduce((x) => {
-    if (x === '.') {
-      return height;
-    } else {
-      return ++height;
+  line.forEach((element) => {
+    if (element !== '.') {
+      height++;
     }
   });
+  return height;
 }
 
 Board.prototype.print = function () {
@@ -75,8 +74,29 @@ Board.prototype.place = function (index, block) {
   return clone;
 };
 
+Board.prototype.height = function () {
+  let maxHeight = 0;
+  this.board.forEach((element) => {
+    let lineHeight = height(element);
+    if (lineHeight > maxHeight) {
+      maxHeight = lineHeight;
+    }
+  });
+  return maxHeight;
+};
+
+Board.prototype.scoreMove = function (index, block) {
+  let afterBoard = this.place(index, block);
+  let afterHeight = afterBoard.height();
+  if (afterHeight > this.height()) {
+    return 0;
+  } else {
+    return 1;
+  }
+};
+
 function readBlock () {
   return readline().split(' ');
 }
 
-module.exports = {Board: Board, readBlock: readBlock, board: new Board(), height: height};
+// module.exports = {Board: Board, readBlock: readBlock, board: new Board(), height: height}
